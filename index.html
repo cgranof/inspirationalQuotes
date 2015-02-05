@@ -9,21 +9,31 @@
   <body>
     <div class="mainContainer">
 
-      <h1>Inspire Me</h1>
+      <h1>Inspiration</h1>
 
-      <div class="quoteBox">
-        <input type="text" class="quote">
-      </div> 
-        
-      <div class="authorBox">
-        <input type="text" class="author">
+      <div id="edit">
+        <form id="edit-form">
+
+          <div class="input-field">
+            <label>Enter a quote</label>
+            <input type="text" id="quote-edit">
+          </div> 
+            
+          <div class="input-field">
+            <label>Who said it?</label>
+            <input type="text" id="author-edit">
+          </div>
+          
+          <div class="submitBox">
+            <button class="submitButton">Submit</button>
+          </div>
+
+        </form>
       </div>
+
+      <div id="posted"></div> 
+
       
-      <div class="submitBox">
-        <button>Submit</button>
-      
-      </div>
-     
 
     
     

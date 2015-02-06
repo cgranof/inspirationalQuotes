@@ -1,47 +1,96 @@
 
 //Quote constructor 
 
-var Quote = function(quotetext, author){
-  this.quotetext = quotetext;
-  this.author = author;
+var Quote = function(quotetext, authortext){
+  this.quotetext = quotetext
+  this.author = authortext;
   this.rating = 0;
+
+  var star = $('<div>')
+    .addClass("glyphicon glyphicon-star");
+
+  this.newStar = [star.clone(), star.clone(), star.clone(), star.clone(), star.clone()];
 }
 
 Quote.prototype.render = function(){
-  var star = $('<div>')
-    .addClass("glyphicon glyphicon-star");
-  var newStar = [star.clone(), star.clone(), star.clone(), star.clone(), star.clone()];
-  this.$el = $('<div class="postedContainer">').clone()
-    .append(newStar);
+
   
+  this.$el = $('<div class="postedContainer">').clone()
+
+
+  
+  this.$el.append('<div class="postedQuote">' +  this.quotetext + '</div>');
+  //this.$el.append('</p>');
+  this.$el.append('<div class="postedAuthor">' + this.author + '</div>');
+  //this.$el.append('</p>');
+  this.$el.append(this.newStar);
+
+  this.$el.find('.glyphicon-star')
+  .on('click', this._starClicked.bind(this));
+
+
+
   return this.$el;
 }
 
-Quote.prototype.starClicked = function(e){
+Quote.prototype._starClicked = function(e){
   var currentQuote = this;
   var ratingStar = $(e.currentTarget);
-  var rating = ratingStar.index() + 1;
+  var rating = ratingStar.index() - 1;
   currentQuote.rating = rating;
+
+  $(e.currentTarget).siblings().css("color", "grey");
+  $(e.currentTarget).css("color", "yellow");
+  $(e.currentTarget).prevAll().css("color", "yellow");
+
 }
 
 // Library constructor
 
 var Library = function(){
   this.quotes = [];
+  numberOfQuotes = 0;
 }
 
-Library.prototype.addQuotes = function(){
-  this.quotes = this.quotes.concat([].slice.call(arguments));
+
+//Push new quotes to the array
+Library.prototype.addQuotes = function(quoteArg){
+  this.numberOfQuotes = this.quotes.push(quoteArg);
 }
 
-Library.prototype.render = function(){
-  this.$el = $('#posted')
-  this.$el.find('.quotes').empty().append(
-    this.quotes.map(function(quote) {
-      return quote.render();
-    })
-  );
-  return this.$el;
+Library.prototype.sortByRating = function(){
+
+
+//Bubble Sort to re-sort by rating each time a new quote is rated
+
+  var swapQuote;
+
+  for (j = 0; j < this.numberOfQuotes; j++){
+
+    for (i = 0; i < this.numberOfQuotes -1 ; i++){ 
+      if (this.quotes[i].rating < this.quotes[i+1].rating){
+        swapQuote = this.quotes[i];
+        this.quotes[i] = this.quotes[i+1];
+        this.quotes[i+1] = swapQuote;
+      }
+  }
+}
+}
+
+
+
+Library.prototype.render = function()
+{
+  $('#posted').empty();
+  this.$el = $('#posted');
+
+  for (i = 0; i < this.numberOfQuotes; i++) { 
+    this.$el.append(this.quotes[i].render());
+    
+}
+  
+  return;
+
 }
 
 
@@ -49,49 +98,37 @@ Library.prototype.render = function(){
 
 $(document).on('ready', function() {
 
+
+var myLibrary = new Library();
 //Click handler for submit form
 
   $('.submitButton').on('click', function(e){
+
     var myQuote = new Quote($('#quote-edit').val(), $('#author-edit').val() );
-    var myLibrary = new Library();
-    //var submittedQuote = $('#quote-edit').val();
-    //var submittedAuthor = $('#author-edit').val();
+
+    
+
 		e.preventDefault();
     $('#quote-edit').val(' ');
     $('#author-edit').val(' ');
     
+    
+
+    
+
+
     myLibrary.addQuotes(myQuote);
-    $('#posted').append(myLibrary.render());
+    
+    myLibrary.sortByRating();
 
-    /*var postedQuote = $('<div class="postedQuote">');
-    var postedAuthor = $('<div class="postedAuthor">');
-    var postedContainer = $('<div class="postedContainer">');
-    var star = $('<div>')
-      .addClass("glyphicon glyphicon-star");
-    var newStar = [star.clone(), star.clone(), star.clone(), star.clone(), star.clone()];
- 
+    
 
-    postedContainer
-      .append((postedQuote).text(submittedQuote))
-      .append((postedAuthor).text(submittedAuthor))
-      .append(newStar);
-          
-    $('#posted').append(postedContainer);*/
+    myLibrary.render();
+
+
+
+   
   });  
-
-
-//Click handler for rating stars 
-
-
-  $(document).on("click", '.glyphicon-star', function(){
-    $(this).css("color", "yellow");
-    $(this).prevAll().css("color", "yellow");
-    console.log("I clicked a STAR!!");
-  });
-
-
-
-
 
 
 });

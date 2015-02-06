@@ -34,14 +34,7 @@ h1 {
 	padding: 10px;
 }
 
-.quoteBubble {
-	background-color: red;
-	width: 10px;
-	height: 10px;
-	border-radius: 50px;
-	margin: auto;
-	color: #fff;
-}
+
 
 .postedQuote {
 	font-size: 18px;
